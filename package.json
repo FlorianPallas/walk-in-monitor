@@ -1,7 +1,6 @@
 {
-  "name": "walk-in-utilization",
+  "name": "walk-in-monitor",
   "version": "0.1.0",
-  "private": true,
   "dependencies": {
     "@aws-sdk/client-dynamodb": "^3.36.1",
     "@aws-sdk/lib-dynamodb": "^3.36.1",
