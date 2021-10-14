@@ -8,15 +8,20 @@ import {
 import type { Datapoint } from '../types';
 import { formatDate } from './date';
 
-export const client = new DynamoDBClient({ region: 'eu-central-1' });
+export const client = new DynamoDBClient({
+  region: process.env.DYNAMODB_REGION,
+  credentials: {
+    accessKeyId: process.env.DYNAMODB_ACCESS_KEY_ID,
+    secretAccessKey: process.env.DYNAMODB_SECRET_ACCESS_KEY,
+  },
+});
 export const documentClient = DynamoDBDocumentClient.from(client);
-const DYNAMODB_TABLE = 'walk-in-utilization';
 
 export const getData = () =>
   documentClient
     .send(
       new ScanCommand({
-        TableName: DYNAMODB_TABLE,
+        TableName: process.env.DYNAMODB_TABLE,
       })
     )
     .then((res) => (res.Items as Datapoint[]) ?? []);
@@ -25,7 +30,7 @@ export const getDataAt = (at: Date) =>
   documentClient
     .send(
       new QueryCommand({
-        TableName: DYNAMODB_TABLE,
+        TableName: process.env.DYNAMODB_TABLE,
         KeyConditionExpression: '#date = :date',
         ExpressionAttributeNames: { '#date': 'date' },
         ExpressionAttributeValues: { ':date': formatDate(at) },
@@ -77,7 +82,7 @@ export const getAverageAt = (at: string) =>
   documentClient
     .send(
       new QueryCommand({
-        TableName: DYNAMODB_TABLE,
+        TableName: process.env.DYNAMODB_TABLE,
         KeyConditionExpression: '#date = :date',
         ExpressionAttributeNames: { '#date': 'date' },
         ExpressionAttributeValues: { ':date': `$avg_${at}` },
@@ -165,7 +170,7 @@ export const updateAverage = async () => {
 
           await documentClient.send(
             new PutCommand({
-              TableName: DYNAMODB_TABLE,
+              TableName: process.env.DYNAMODB_TABLE,
               Item: {
                 date: `$avg_daily_${weekday}`,
                 time,
