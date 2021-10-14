@@ -1,0 +1,14 @@
+[build]
+  command = "yarn build"
+  functions = "src/functions"
+  publish = "build"
+
+  [[redirects]]
+    from = "/*"
+    to = "/index.html"
+    status = 200
+
+  [dev]
+    command = "yarn start"
+    port = 3001
+    publish = "public"
