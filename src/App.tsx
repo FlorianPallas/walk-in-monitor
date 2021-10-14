@@ -35,7 +35,6 @@ const App: FC = () => {
   };
 
   useEffect(() => {
-    console.log(new Date().getDay());
     setWeekday(new Date().getDay());
   }, []);
 
